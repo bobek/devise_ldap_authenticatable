@@ -19,8 +19,8 @@ Requirements
 
 These gems are dependencies of the gem:
 
-- Devise 1.4.0
-- net-ldap 0.2.2
+- Devise ~> 1.4.0 
+- net-ldap ~> 0.2.2
 
 Installation
 ------------
@@ -31,7 +31,7 @@ This will *only* work for Rails 3 applications.
 
 In the Gemfile for your application:
 
-    gem "devise", "1.4.0"
+    gem "devise", "~> 1.4"
     gem "devise_ldap_authenticatable"
     
 To get the latest version, pull directly from github instead of the gem:
@@ -140,9 +140,9 @@ All unit and functional tests are part of a sample rails application under test/
 Build / Start Instructions for Test LDAP Server
 -----------------------------------------------
 
-Make sure that directories test/ldap/openldap-data and test/ldap/openldap-data/run exist.
+These instructions require the current directory context to be the `test/ldap` directory relative to the project root.
 
-  1. To start the server, run `./run_server.sh`
+  1. To start the server, run `./run-server.sh`
   2. Add the basic structure: `ldapadd -x -h localhost -p 3389 -x -D "cn=admin,dc=test,dc=com" -w secret -f base.ldif`
     * this creates the users / passwords:
       * cn=admin,dc=test,com / secret
@@ -151,7 +151,7 @@ Make sure that directories test/ldap/openldap-data and test/ldap/openldap-data/r
   
   _For a LDAP server running SSL_
   
-  1. To start the server, run: `./run_server.sh --ssl`
+  1. To start the server, run: `./run-server.sh --ssl`
   2. Add the basic structure: `ldapadd -x -H ldaps://localhost:3389 -x -D "cn=admin,dc=test,dc=com" -w secret -f base.ldif`
     * this creates the users / passwords:
       * cn=admin,dc=test,com / secret

@@ -15,6 +15,16 @@ class UserTest < ActiveSupport::TestCase
       default_devise_settings!
       reset_ldap_server!
     end
+
+    context "look up and ldap user" do
+      should "return true for a user that does exist in LDAP" do
+        assert_equal true, ::Devise::LdapAdapter.valid_login?('example.user@test.com')
+      end
+
+      should "return false for a user that doesn't exist in LDAP" do
+        assert_equal false, ::Devise::LdapAdapter.valid_login?('barneystinson')
+      end
+    end
   
     context "create a basic user" do
       setup do
@@ -170,6 +180,25 @@ class UserTest < ActiveSupport::TestCase
         assert_equal(User.all.size, 1)
         assert_contains(User.all.collect(&:uid), "example_user", "user not in database")
       end
+
+      should "call ldap_before_save hooks" do
+        User.class_eval do
+          def ldap_before_save
+            @foobar = 'foobar'
+          end
+        end
+        user = User.authenticate_with_ldap(:uid => "example_user", :password => "secret")
+        assert_equal 'foobar', user.instance_variable_get(:"@foobar")
+        User.class_eval do
+          undef ldap_before_save
+        end
+      end
+
+      should "not call ldap_before_save hook if not defined" do
+        assert_nothing_raised do
+          should_be_validated Factory(:user, :uid => "example_user"), "secret"
+        end
+      end
     end    
   end
   
@@ -189,6 +218,20 @@ class UserTest < ActiveSupport::TestCase
       should "be able to authenticate" do
         should_be_validated @user, "secret"
         should_be_validated @admin, "admin_secret"
+      end
+    end
+  end
+
+  context "using variants in the config file" do
+    setup do
+      default_devise_settings!
+      reset_ldap_server!
+      ::Devise.ldap_config = Rails.root.join 'config', 'ldap_with_boolean_ssl.yml'
+    end
+
+    should "not fail if config file has ssl: true" do
+      assert_nothing_raised do
+        Devise::LdapAdapter::LdapConnect.new
       end
     end
   end

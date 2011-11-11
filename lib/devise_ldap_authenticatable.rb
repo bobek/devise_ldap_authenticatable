@@ -37,7 +37,9 @@ module Devise
   
   mattr_accessor :ldap_update_user_attributes
   @@ldap_update_user_attributes = {}
-  
+
+  mattr_accessor :ldap_ad_group_check
+  @@ldap_ad_group_check = false
 end
 
 # Add ldap_authenticatable strategy to defaults.

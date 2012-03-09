@@ -50,7 +50,7 @@ module Devise
         ldap_entry = Devise::LdapAdapter.get_entry(login_with, password)
         ::Devise.ldap_update_user_attributes.each_pair do |ldap_attribute, model_attribute|
           begin
-            send model_attribute.to_s+"=", ldap_entry.send(ldap_attribute.to_s).to_a.first.to_s
+            send model_attribute.to_s+"=", ldap_entry.send(ldap_attribute.to_s)
           rescue NoMethodError => e
             DeviseLdapAuthenticatable::Logger.send("LDAP warning: uknown attributes #{ldap_attribute.to_s}")
             begin

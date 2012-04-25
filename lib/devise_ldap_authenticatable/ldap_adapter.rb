@@ -96,15 +96,9 @@ module Devise
       end
       
       # returns the LDAP entry object
-      # FIXME this is probably good candidate for refactoring
       def entry
-        # try to authenticate to bind in order to get eventual access rights for search
         authenticate!
-        res = nil
-        @ldap.search(:base => @ldap.base, :filter => Net::LDAP::Filter.eq(@attribute.to_s, @login.to_s)) do |entry| 
-          res = entry
-        end
-        return res
+        search_for_login
       end
 
       def dn
@@ -237,7 +231,7 @@ module Devise
         DeviseLdapAuthenticatable::Logger.send("LDAP search for login: #{@attribute}=#{@login}")
         filter = Net::LDAP::Filter.eq(@attribute.to_s, @login.to_s)
         ldap_entry = nil
-        @ldap.search(:filter => filter) {|entry| ldap_entry = entry}
+        LdapConnect.admin.search(:filter => filter) {|entry| ldap_entry = entry}
         ldap_entry
       end
       

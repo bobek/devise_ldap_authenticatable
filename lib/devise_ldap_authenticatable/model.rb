@@ -52,7 +52,7 @@ module Devise
           begin
             send model_attribute.to_s+"=", ldap_entry.send(ldap_attribute.to_s)
           rescue NoMethodError => e
-            DeviseLdapAuthenticatable::Logger.send("LDAP warning: uknown attributes #{ldap_attribute.to_s}")
+            DeviseLdapAuthenticatable::Logger.send("LDAP warning: unknown LDAP attribute #{ldap_attribute.to_s}")
             begin
               send model_attribute.to_s+"=", nil
             rescue NoMethodError => e
